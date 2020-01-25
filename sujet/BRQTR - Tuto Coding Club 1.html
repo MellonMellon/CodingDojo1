@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="created" content="2020-01-21T09:31:01+0100"/>
+        <meta name="modified" content="2020-01-24T23:25:59+0100"/>
+        <meta name="tags" content=""/>
+        <meta name="last device" content="Théo’s MacBook Pro (2)"/>
+    </head>
+    <body>
+        <div class="note-wrapper">
+            <p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/briqueterie-logotype-horizontal-2C-noir.png'></p>
+<h1>Coding Dojo #1</h1>
+<p>Bienvenue à ce tout premier atelier de la série des Coding Dojo ! 😃</p>
+<p>Au cours de la journée vous allez découvrir votre Raspberry Pi, coder avec le langage Python et utiliser la librairie OpenCV afin de créer votre propre système de vidéo surveillance avec reconnaissance faciale.</p>
+<br>
+<h1>Votre Bundle</h1>
+<p>Commençons par découvrir votre matériel, le bundle est composé des éléments suivants :</p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Bundle.jpeg'></p>
+<br>
+<ol start="1"><li>Raspberry Pi 4 2Go
+</li><li>Cable d’alimentation USB C
+</li><li>Carte mémoire microSD 16Go
+</li><li>Module caméra 5MP 160 degrés
+</li></ol>
+<br>
+<br>
+<hr>
+<br>
+<br>
+<h1>I - Un peu d’électronique</h1>
+<h2>I.1 - Le matériel</h2>
+<p>Découvrons plus en détail votre nouveau Raspberry Pi !</p>
+<br>
+<p>Lancé en 2012, le tout premier Raspberry Pi est un nano ordinateur faisant la taille d’une carte de crédit et très abordable. Il a pour but de permettre à quiconque de s’initier à la programmation, les Raspberry sont aujourd’hui utilisés par de nombreux makers du monde entier.</p>
+<p>Vous possédez désormais la dernière révision en date et le plus puissant des modèles, il s’agit du Raspberry Pi 4 model B avec 2Go de RAM.</p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Rasp%20Pi.jpeg'></p>
+<br>
+<p>Description des composants principaux :</p>
+<ol start="1"><li>Processeur Broadcom à 1,5Ghz quadricoeur (architecture ARM Cortex A72)
+</li><li>Port d’alimentation USB C (ce port est dédié exclusivement à l’alimentation, inutile d’essayer d’accéder aux données de la carte microSD 😉 )
+</li><li>2 ports mini-hdmi en guise de sorties vidéo (oui, vous pourrez brancher deux écrans sur votre Raspberry 😍)
+</li><li>Connecteur caméra
+</li><li>Sortie audio jack 3.5
+</li><li>2 ports USB 2.0
+</li><li>2 ports USB 3.0
+</li><li>Prise Ethernet gigabit
+</li><li>Puce Wifi gérant la norme AC, les fréquences 2.4Ghz / 5Ghz et le Bluetooth 5.0 (oui, le 9 n’est pas sur la photo, “it’s a trap” comme dirait l’amiral Ackbar 👽)
+</li></ol>
+<br>
+<br>
+<h2>I.2 - Assemblage</h2>
+<p>Place à la pratique, vous trépignez d’impatience, il est temps de mettre en service notre Raspberry Pi.</p>
+<br>
+<ul><li>Commencez par retourner votre Raspberry et insérez délicatement la carte MicroSD.
+</li></ul>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Carte%20SD.jpeg'></p>
+<br>
+<ul><li>Occupons-nous de la caméra, repérez le connecteur sur le Raspberry avec l’inscription “CAMERA” sur la carte mère et ouvrez-le en déclipsant le plastique noir.
+</li></ul>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Connecteur%20Cam.jpeg'></p>
+<br>
+<p>Insérez la nappe délicatement jusqu’au fond du connecteur. Attention, vérifiez bien que les connecteurs sont dans le bon sens (connecteurs côté prise mini-hdmi)</p>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Connecteur%20Cam2.jpeg'></p>
+<br>
+<p>Enfin, clipsez le plastique noir afin que la nappe du module caméra tienne bien dans le connecteur.</p>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Connecteur%20Cam3.jpeg'></p>
+<br>
+<ul><li>Il ne nous reste plus qu’à brancher le câble USB C relié à votre PC pour alimenter le Raspberry Pi.
+</li></ul>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Cable%20Alim.jpeg'></p>
+<br>
+<p>Une diode rouge va s’allumer, ça signifie que votre Raspberry est sous tension.</p>
+<p>La verte indique l’activité de lecture / écrire sur la carte mémoire.</p>
+<br>
+<blockquote>
+<p>💡 Le Raspberry Pi met 45 secondes pour démarrer son système. Prenez l’habitude de lui laisser 1 minute, le temps qu’il puisse lancer tous ses services.</p>
+</blockquote>
+<br>
+<br>
+<hr>
+<br>
+<br>
+<h1>II - Connexion & Configuration</h1>
+<h2>II.1 - Prologue, configuration faite par @La_Briqueterie</h2>
+<p>Pour le bon déroulé de cet atelier et afin qu’il soit le plus intéressant possible pour vous (qu’il ne dure pas 48h), nous avons préconfiguré vos Raspberry Pi en amont.</p>
+<p>Nous allons donc vous exposer les grandes lignes afin que vous ayez tous les éléments en main pour refaire la configuration dans le futur si le coeur vous en dit.</p>
+<br>
+<h3>L’OS - Raspbian</h3>
+<p>Avant toute chose, il faut commencer par installer un système d’exploitation.</p>
+<p>Plusieurs OS sont disponibles pour Raspberry Pi. Nous avons utilisé le système officiel <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a> qui est un système d'exploitation libre basé sur Debian et optimisé pour fonctionner sur un Raspberry Pi.</p>
+<br>
+<h3>Session & mot de passe administrateur</h3>
+<p>Chaque Raspberry a comme nom d’utilisateur / session “pi” et mot de passe “password” (on a trouvé ça mieux que 1234 🤫).</p>
+<p>Naturellement nous avons fait cette configuration totalement “no safety” afin de pouvoir interagir avec vous tous au long de la journée avec simplicité et optimiser nos longues heures de configurations. Nous vous encourageons vivement à changer le mot de passe de session une fois l’atelier fini.</p>
+<br>
+<h3>Wifi & IP fixe</h3>
+<p>Nous avons mis en place une infrastructure réseau composée de deux routeurs distincts. Chaque Raspberry Pi à été connecté via Wifi à l’un des deux routeurs et nous leur avons attribué une adresse IP fixe (d’où les magnifiques post it verts / jaune pour savoir 😌)</p>
+<p>Ce qui signifie qu’au moment où vous lisez ces lignes, votre Raspberry est déjà connecté au Wifi de La Briqueterie, prêt à servir, et vous allez pouvoir interagir avec en utilisant son adresse IP (on y revient dans un instant).</p>
+<br>
+<h3>Librairie OpenCV</h3>
+<p>Comme vous le savez déjà, vous allez découvrir la librairie OpenCV afin de gérer la reconnaissance faciale.</p>
+<p>Téléchargement, compilation et configuration auraient nécessité environ deux heures. Nous vous épargnons donc ce processus plutôt fastidieux pour nous concentrer sur les parties les plus intéressantes.</p>
+<p>Pour les plus codeurs d’entre vous, n’hésitez pas à nous solliciter si vous voulez que l’on vous montre les différentes commandes effectuées 🤓</p>
+<br>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Maintenant à vous de jouer !</b></p>
+<br>
+<br>
+<h2>II.2 - Wifi pour votre PC</h2>
+<p>Il faut désormais connecter votre PC au bon réseau Wifi afin de pouvoir accéder à votre Raspberry Pi. Le choix est simple, il dépend de la couleur de votre post it :</p>
+<ol start="1"><li><b>VERT :</b> Wifi “Netgear19” & pass “cheerfulmint161”
+</li><li><b>JAUNE :</b> Wifi “Netgear56” & pass “cloudycoconut379”
+</li></ol>
+<br>
+<p><b><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Afin de ne pas surcharger l’infrastructure réseau et pour le bon déroulé de l’atelier, merci de ne pas connecter vos smartphones au Wifi 🙏 (pour l’instant... 😏)</b></p>
+<br>
+<blockquote>
+<p>💡 Si vous êtes un habitué de La Briqueterie, il se peut que soyez déjà connecté à notre Wifi “La Brique”. Si c’est le cas, retirez ce réseau de votre liste afin d’éviter de potentielles erreurs 😉</p>
+</blockquote>
+<br>
+<br>
+<h2>II.3 - Connexion au Raspberry Pi en SSH</h2>
+<p>SSH est un protocole de communication sécurisé qui va nous permettre de communiquer avec le Raspberry Pi sur le même réseau.</p>
+<br>
+<h3>Windows</h3>
+<p>Il vous faudra au préalable télécharger et installer le client SSH <a href="https://www.putty.org">Putty</a></p>
+<br>
+<h3>macOS & Linux</h3>
+<p>Utilisez la commande SSH pour vous connecter à votre Raspberry via son adresse IP (pour rappel elle est notée sur le post it 😉) :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">ssh</span> pi@10.0.0.10</code></pre>
+<p><br></p>
+<p>Renseigner votre mot de passe, pour rappel c’est l’original “password”.</p>
+<p>Vous devriez voir apparaitre ceci :</p>
+<p><code class='code-inline'>pi@raspberrypi:~ $</code></p>
+<br>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Vous voici connecté 🙌</b></p>
+<br>
+<br>
+<h2>II.4 - Administration système de base</h2>
+<h3>Faisons le ménage</h3>
+<p>Avoir un système d’exploitation avec plein de choses immédiatement disponibles c’est intéressant. Mais à l’inverse Raspbian embarque par défaut quelques éléments qui ne nous serviront pas (comme Libre Office) et prennent de la place (précieuse) sur notre carte mémoire… On va donc commencer par faire un brin de ménage.</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> purge wolfram-engine
+$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> purge libreoffice*
+$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> clean
+$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> autoremove</code></pre>
+<p><br></p>
+<h3>Installation des dépendances</h3>
+<p>Nous allons dans cette partie installer plusieurs dépendances, des paquets (ou librairies) qui sont nécessaires au développement de notre solution.</p>
+<br>
+<p>Commençons par vérifier que tous les paquets déjà installés sur la machine sont bien à jour :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> update <span class="sf_code_operator">&&</span> <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> upgrade</code></pre>
+<p><br></p>
+<p>On installe un ensemble de paquets dits essentiels, qui vont nous servir pour la suite des manipulations :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> build-essential cmake pkg-config</code></pre>
+<p><br></p>
+<blockquote>
+<p>💡 Vous aurez remarqué qu’aucun paquet n’a été mis à jour, en réalité nous avons déjà effectué cette commande par nécessité pour l’installation d’OpenCV. Cependant nous tenions à vous la présenter dans ce tuto car elle vous sera utile pour la plupart de vos futurs projets sur Raspberry Pi.</p>
+</blockquote>
+<br>
+<p>Passons aux librairies nécessaires au traitement des images :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev</code></pre>
+<p><br></p>
+<p>Et naturellement celles pour le traitement des vidéos :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> libxvidcore-dev libx264-dev</code></pre>
+<p><br></p>
+<p>Si nous branchons le Raspberry Pi à un écran, ce paquet permet d’afficher le flux de la caméra connectée dans une fenêtre de l’interface graphique de l’OS.</p>
+<p>Vous n’en aurez pas besoin de suite. Ce paquet est optionnel, mais peut s’avérer nécessaire, nous vous recommandons donc de l’installer.</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> libgtk2.0-dev libgtk-3-dev</code></pre>
+<p><br></p>
+<p>Enfin, installons un ensemble d’éléments (comme des calculs de matrices) qui seront utilisés par la librairie OpenCV afin d’optimiser son traitement :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> libatlas-base-dev gfortran</code></pre>
+<p><br></p>
+<h3>Python</h3>
+<p>Le étapes de développement qui vont suivre se feront avec le langage Python, nous allons donc installer toutes les dépendances qui y sont liées.</p>
+<p>La suite du tuto a été pensée sur la version 3 de Python. Cependant de nombreuses librairies utilisent encore la version 2.7 et certains développeurs préfèrent travailler avec cette version de Python.</p>
+<p>Nous installons donc les deux versions de Python, ainsi que <b>pip</b> qui est le gestionnaire de dépendances dédié à Python.</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">apt-get</span> <span class="sf_code_function">install</span> python2.7-dev python3-dev
+$ <span class="sf_code_function">wget</span> https://bootstrap.pypa.io/get-pip.py
+$ <span class="sf_code_function">sudo</span> python get-pip.py
+$ <span class="sf_code_function">sudo</span> python3 get-pip.py</code></pre>
+<p><br></p>
+<h3>Environnement Virtuel</h3>
+<p>Il va nous permettre de créer un environnement au sein duquel nous pourrons installer les dépendances de Python. C’est une bonne pratique de créer un environnement par projet, ça permet de créer une sorte de sandbox, les installations seront contenues dans cet environnement et n’aurons pas d’impact sur le système. En cas d’incompatibilité ou d’erreur technique, cela permet d’isoler le problème et de garder le système fonctionnel.</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">sudo</span> pip <span class="sf_code_function">install</span> virtualenv virtualenvwrapper
+$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">rm</span> -rf ~/.cache/pip</code></pre>
+<p><br></p>
+<p>Éditez le fichier <code class='code-inline'>~/.profile</code>  avec  <code class='code-inline'>nano</code> et ajouter au début du fichier :</p>
+<pre><code class='code-multiline' lang='bash'><span class="sf_code_comment"># virtualenv and virtualenvwrapper</span>
+<span class="sf_code_function">export</span> WORKON_HOME<span class="sf_code_operator">=</span><span class="sf_code_variable">$HOME</span>/.virtualenvs
+<span class="sf_code_function">export</span> VIRTUALENVWRAPPER_PYTHON<span class="sf_code_operator">=</span>/usr/bin/python3
+<span class="sf_code_function">source</span> /usr/local/bin/virtualenvwrapper.sh</code></pre>
+<p><br></p>
+<p>Appliquez les modifications avec la commande <b>source</b> :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">source</span> ~/.profile</code></pre>
+<p><br></p>
+<p>Et enfin, créons notre environnement virtuel “cv”, le tour est joué 👌 :</p>
+<pre><code class='code-multiline' lang='bash'>$ mkvirtualenv cv -p python3
+</code></pre><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Vous verrez apparaitre <b>“(cv)”</b> au début de votre prompt.
+
+<u>Pour info</u>, pour sortir de l’environnement vous pourrez utiliser :
+<pre><code class='code-multiline' lang='bash'>$ deactivate</code></pre>
+<p><br></p>
+<p>Et pour y rentrer de nouveau :</p>
+<pre><code class='code-multiline' lang='bash'>$ workon cv</code></pre>
+<p><br></p>
+<p><b>Une fois dans votre environnement</b>, installez la dépendance “numpy”, qui permettra d’exécuter des calculs scientifiques au sein d’OpenCV :</p>
+<pre><code class='code-multiline' lang='bash'>$ pip <span class="sf_code_function">install</span> numpy</code></pre>
+<p><br></p>
+<p>Comme mentionné précédemment, nous avons déjà installé la librairie OpenCV en amont. Il reste cependant une ultime étape importante à votre charge… Maintenant que Python est installé et configuré, il nous faut le lier à OpenCV 😌 :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">cd</span> ~/.virtualenvs/cv/lib/python3.7/site-packages/
+$ <span class="sf_code_function">ln</span> -s /usr/local/python/cv2/python-3.7/cv2.cpython-37m-arm-linux-gnueabihf.so cv2.so
+$ <span class="sf_code_function">cd</span> ~</code></pre>
+<p><br></p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>That’s all folks ! 🤗</b></p>
+<br>
+<h3>Testons</h3>
+<p>Avant d’aller plus loin, assurons-nous que toute notre installation et configuration est bien fonctionnelle :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">source</span> ~/.profile
+$ workon cv
+$ python
+<span class="sf_code_operator">&gt;&gt;&gt;</span> <span class="sf_code_function">import</span> cv2
+<span class="sf_code_operator">&gt;&gt;&gt;</span> cv2.__version__
+‘4.0.0’
+<span class="sf_code_operator">&gt;&gt;&gt;</span></code></pre>
+<p><br></p>
+<p><b><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Si vous ne rencontrez pas d'erreur et voyez “4.0.0” c'est que vous avez super bien géré et on passe à l'étape supérieure ! 😎</b></p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/we-did-it.jpg'></p>
+<br>
+<br>
+<hr>
+<br>
+<h1>III - Préparation du stream vidéo</h1>
+<p>Et si on jetait un oeil à ce que voit notre caméra ? 🧐</p>
+<br>
+<h2>III.1 - Capter le flux vidéo</h2>
+<p>Pour nous faciliter le travail, nous allons utiliser la librairie <b>mjpg-streamer</b> afin de capter le flux de la caméra et de l’afficher dans une page web.</p>
+<br>
+<blockquote>
+<p>💡 Pour rappel vérifier bien que vous êtes dans votre environnement “cv”, si ce n’est pas le cas utilisez la commande <code class='code-inline'>workon cv</code></p>
+</blockquote>
+<br>
+<p>Commençons par récupérer les fichiers source de cette librairie et lançons la compilation :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">cd</span> /tmp
+$ <span class="sf_code_function">git</span> clone https://github.com/jacksonliam/mjpg-streamer.git
+$ <span class="sf_code_function">cd</span> mjpg-streamer/mjpg-streamer-experimental
+$ cmake -DPLUGIN_INPUT_OPENCV<span class="sf_code_operator">=</span>OFF
+$ <span class="sf_code_function">make</span>
+$ <span class="sf_code_function">sudo</span> <span class="sf_code_function">make</span> <span class="sf_code_function">install</span></code></pre>
+<p><br></p>
+<blockquote>
+<p>💡 Le DPLUGIN est une étape importante, si vous l’oubliez la compilation échouera. En effet, jpg-steamer intègre une partie d’OpenCV (une vieille version). Or, nous avons déjà installé et configuré la librairie OpenCV, nous désactivons donc cette partie du côté de jpg-steamer.</p>
+</blockquote>
+<br>
+<p>On va maintenant déclencher l’écoute du flux de la caméra avec la commande <b>raspistill</b> et enregistrer une image toutes les 5 millisecondes :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">cd</span>
+$ <span class="sf_code_function">mkdir</span> tmp
+$ <span class="sf_code_function">cd</span> tmp
+$ <span class="sf_code_function">mkdir</span> stream
+$ raspistill -w 640 -h 480 -q 5 -o tmp/stream/pic.jpg -tl 500 -t 9999999</code></pre>
+<p><br></p>
+<blockquote>
+<p>💡 Vous aurez remarqué les paramètres <i>-w 640 -h 480</i>, il s’agit de la résolution de l’image que nous avons volontairement définie en basse résolution. Vous pourrez revenir par la suite jouer avec ces paramètres pour faire varier la qualité en fonction des performances finales 👨‍💻</p>
+</blockquote>
+<p>  </p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Vous voyez maintenant chaque frame qui est enregistré dans notre fichier .jpg 😎 Laissez tourner et passons à la suite…</b></p>
+<br>
+<p>Ouvrez un nouveau terminal et connectez-vous à nouveau au Raspberry Pi avec SSH.</p>
+<p>On met enfin en place un serveur <u>”rtsp”</u> (“Real Time Streaming Protocol), notre streaming, et c’est dans la boite :</p>
+<pre><code class='code-multiline' lang='bash'>$ mjpg_streamer -i <span class="sf_code_string">"/usr/local/lib/mjpg-streamer/input_file.so -f tmp/stream -n pic.jpg -delay 0.1"</span> -o <span class="sf_code_string">"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www"</span></code></pre>
+<p><br></p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Ça tourne, on laisse tranquille et on revient à notre PC 😌</b></p>
+<br>
+<h2>III.2 - Le flux dans une page Web</h2>
+<p>Maintenant que la captation du flux vidéo est fonctionnelle, on va l’intégrer au sein d’une page HTML afin de pouvoir y accéder depuis un navigateur, que ce soit sur desktop ou mobile.</p>
+<br>
+<blockquote>
+<p>👀 Le développement Web n’étant pas le sujet majeur de cet atelier, nous ne nous attarderons pas trop sur cette partie. Nous vous fournissons ci-dessous une page de test basique qui nous a servi durant la conception de ce tuto. Elle a été créée par un gentil <i>Richard Atterer</i> qui nous fait gagner du temps ⏳</p>
+</blockquote>
+<br>
+<p>On va donc créer un page HTML qui va simplement intégrer le flux vidéo avec un peu de code JavaScript.</p>
+<p>Récupérez la page HTML sur votre machine (clic secondaire - “enregistrer sous”) et ouvrez-la avec votre éditeur préféré :</p>
+<p><a href='BRQTR%20-%20Tuto%20Coding%20Club%201/MaPage.html'>MaPage.html</a></p>
+<br>
+<p>Trouvez la ligne :</p>
+<pre><code class='code-multiline' lang='html'>img.src = "http://10.0.0.10:8080/?action=snapshot&n=" + (++imageNr);</code></pre>
+<p><br></p>
+<p>Remplacez l’adresse IP par celle de votre Raspberry Pi et sauvegardez.</p>
+<br>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Il ne vous reste plus qu’à ouvrir la page avec votre navigateur favori… TADAAAA 🤩</b></p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/c20f0cf8513d915a77bf06c35276c7e5.jpeg'></p>
+<br>
+<blockquote>
+<p>💡 La saviez-vous ? Lancez simplement VLC et faites ouvrir un réseau. Renseignez l’URL <code class='code-inline'>http://10.0.0.10:8080/?action=stream</code> en remplaçant avec l’adresse IP de votre Raspberry Pi, it works 😉</p>
+<p>Oui, ça marche même sur mobile 🤫, mais on testera plus tard afin de ne pas tuer l’infrastructure réseau 😇</p>
+</blockquote>
+<br>
+<br>
+<hr>
+<br>
+<br>
+<h1>IV - Reconnaissance Faciale</h1>
+<p>On rentre dans du lourd… Du très très lourd !</p>
+<p>Plus de bla-bla, vous savez pourquoi on est là, c’est parti !!</p>
+<br>
+<h2>IV.1 - Détection de mouvement & objet</h2>
+<p>Commencez par stopper la commande <code class='code-inline'>raspistill</code> en faisant <code class='code-inline'>ctrl+c</code>.</p>
+<br>
+<blockquote>
+<p>⚠️ Vérifiez que vous êtes bien dans votre environnement “cv”</p>
+</blockquote>
+<br>
+<p>On va rajouter quelques dépendances, des utilitaires pour le traitement d’images avec OpenCV dont nous allons avoir besoin :</p>
+<pre><code class='code-multiline' lang='bash'>$ pip <span class="sf_code_function">install</span> imutils
+$ pip <span class="sf_code_function">install</span> picamera</code></pre>
+<p><br></p>
+<p>Créez vous un dossier dans lequel travailler</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">mkdir</span> motioncapture
+$ <span class="sf_code_function">cd</span> motioncapture</code></pre>
+<p><br></p>
+<p>Créons un fichier de configuration <code class='code-inline'>conf.json</code> avec la commande <code class='code-inline'>nano</code></p>
+<pre><code class='code-multiline' lang='json'><span class="sf_code_punctuation">{</span>
+    <span class="sf_code_property">"show_img"</span><span class="sf_code_operator">:</span> <span class="sf_code_string">"../tmp/stream/pic.jpg"</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_property">"min_motion_frames"</span><span class="sf_code_operator">:</span> <span class="sf_code_number">8</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_property">"camera_warmup_time"</span><span class="sf_code_operator">:</span> <span class="sf_code_number">2.5</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_property">"delta_thresh"</span><span class="sf_code_operator">:</span> <span class="sf_code_number">5</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_property">"resolution"</span><span class="sf_code_operator">:</span> <span class="sf_code_punctuation">[</span><span class="sf_code_number">640</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">480</span><span class="sf_code_punctuation">],</span>
+    <span class="sf_code_property">"fps"</span><span class="sf_code_operator">:</span> <span class="sf_code_number">60</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_property">"min_area"</span><span class="sf_code_operator">:</span> <span class="sf_code_number">5000</span>
+<span class="sf_code_punctuation">}</span></code></pre>
+<p><br></p>
+<p>Ces paramètres vont permettre de définir :</p>
+<ol start="1"><li>Le chemin où sera stockée l’image qui sera diffusée dans le stream
+</li><li>Combien d’images sont nécessaires pour déterminer qu’il y a un objet en mouvement.
+</li><li>Temps d’initiation laissé par le logiciel pour le démarrage de la caméra.
+</li><li>Valeur du delta entre l’image actuelle et la précédente, selon sa valeur permet de mettre en évidence un objet en mouvement.
+</li><li>La résolution vidéo (pour le bon déroulé de l’atelier merci de ne pas tenter le diable en tentant direct la 4k et d’attendre votre salon 🙏 Notre infra réseau vous en remercie 😅)
+</li><li>Nombre d’images par seconde
+</li><li>Détermine la zone minimum pour tracer le rectangle qui matérialise visuellement l’objet en mouvement (vous le verrez dans quelques instants 🙃)
+</li></ol>
+<br>
+<h3>Le Code</h3>
+<p>Créez un fichier <code class='code-inline'>brqtr_motion_capture.py</code> avec <code class='code-inline'>nano</code>.</p>
+<br>
+<p>On va commencer par importer tous les éléments dont nous allons avoir besoin, une partie de ces dépendances ont été installées un peu plus tôt par vous-même et les autres durant notre préparation à l’installation d’OpenCV :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_keyword">from</span> picamera<span class="sf_code_punctuation">.</span>array <span class="sf_code_keyword">import</span> PiRGBArray
+<span class="sf_code_keyword">from</span> picamera <span class="sf_code_keyword">import</span> PiCamera
+<span class="sf_code_keyword">import</span> argparse
+<span class="sf_code_keyword">import</span> warnings
+<span class="sf_code_keyword">import</span> datetime
+<span class="sf_code_keyword">import</span> imutils
+<span class="sf_code_keyword">import</span> json
+<span class="sf_code_keyword">import</span> time
+<span class="sf_code_keyword">import</span> cv2</code></pre>
+<p><br></p>
+<p>Définition des arguments que la ligne de commande va prendre en paramètre, en l’occurrence ici, notre fichier de configuration précédemment créé :</p>
+<pre><code class='code-multiline' lang='python'>ap <span class="sf_code_operator">=</span> argparse<span class="sf_code_punctuation">.</span>ArgumentParser<span class="sf_code_punctuation">()</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-c"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--conf"</span><span class="sf_code_punctuation">,</span> required<span class="sf_code_operator">=</span><span class="sf_code_boolean">True</span><span class="sf_code_punctuation">,</span>
+  <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"path to the JSON configuration file"</span><span class="sf_code_punctuation">)</span>
+args <span class="sf_code_operator">=</span> <span class="sf_code_builtin">vars</span><span class="sf_code_punctuation">(</span>ap<span class="sf_code_punctuation">.</span>parse_args<span class="sf_code_punctuation">())</span>
+
+warnings<span class="sf_code_punctuation">.</span>filterwarnings<span class="sf_code_punctuation">(</span><span class="sf_code_string">"ignore"</span><span class="sf_code_punctuation">)</span>
+conf <span class="sf_code_operator">=</span> json<span class="sf_code_punctuation">.</span>load<span class="sf_code_punctuation">(</span><span class="sf_code_builtin">open</span><span class="sf_code_punctuation">(</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"conf"</span><span class="sf_code_punctuation">]))</span></code></pre>
+<p><br></p>
+<p>On configure notre caméra :</p>
+<pre><code class='code-multiline' lang='python'>camera <span class="sf_code_operator">=</span> PiCamera<span class="sf_code_punctuation">()</span>
+camera<span class="sf_code_punctuation">.</span>resolution <span class="sf_code_operator">=</span> <span class="sf_code_builtin">tuple</span><span class="sf_code_punctuation">(</span>conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"resolution"</span><span class="sf_code_punctuation">])</span>
+camera<span class="sf_code_punctuation">.</span>framerate <span class="sf_code_operator">=</span> conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"fps"</span><span class="sf_code_punctuation">]</span>
+rawCapture <span class="sf_code_operator">=</span> PiRGBArray<span class="sf_code_punctuation">(</span>caméra<span class="sf_code_punctuation">,</span> size<span class="sf_code_operator">=</span><span class="sf_code_builtin">tuple</span><span class="sf_code_punctuation">(</span>conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"resolution"</span><span class="sf_code_punctuation">]))</span>
+
+<span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] warming up…"</span><span class="sf_code_punctuation">)</span>
+time<span class="sf_code_punctuation">.</span>sleep<span class="sf_code_punctuation">(</span>conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"camera_warmup_time"</span><span class="sf_code_punctuation">])</span>
+avg <span class="sf_code_operator">=</span> <span class="sf_code_boolean">None</span>
+lastUploaded <span class="sf_code_operator">=</span> datetime<span class="sf_code_punctuation">.</span>datetime<span class="sf_code_punctuation">.</span>now<span class="sf_code_punctuation">()</span>
+motionCounter <span class="sf_code_operator">=</span> <span class="sf_code_number">0</span></code></pre>
+<p><br></p>
+<p>Pour des raisons techniques (une boucle "for" par exemple) nous ne pouvons découper le reste du code, vous trouverez les explications en commentaires directement dans le code pour chaque partie :</p>
+<pre><code class='code-multiline' lang='python'>   <span class="sf_code_comment"># # # #</span>
+   <span class="sf_code_comment"># Démarrage de la capture</span>
+   <span class="sf_code_comment">#</span>
+<span class="sf_code_keyword">for</span> f <span class="sf_code_keyword">in</span> camera<span class="sf_code_punctuation">.</span>capture_continuous<span class="sf_code_punctuation">(</span>rawCapture<span class="sf_code_punctuation">,</span> <span class="sf_code_builtin">format</span><span class="sf_code_operator">=</span><span class="sf_code_string">"bgr"</span><span class="sf_code_punctuation">,</span> use_video_port<span class="sf_code_operator">=</span><span class="sf_code_boolean">True</span><span class="sf_code_punctuation">):</span>
+    frame <span class="sf_code_operator">=</span> f<span class="sf_code_punctuation">.</span>array
+
+   <span class="sf_code_comment"># # # #</span>
+   <span class="sf_code_comment"># On réduit la taille dans le but d’optimiser les temps 	 # de traitement et on applique des effets pour réduire 	 # le "bruit" de l’image</span>
+   <span class="sf_code_comment">#</span>
+    frame <span class="sf_code_operator">=</span> imutils<span class="sf_code_punctuation">.</span>resize<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> width<span class="sf_code_operator">=</span><span class="sf_code_number">500</span><span class="sf_code_punctuation">)</span>
+    gray <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>cvtColor<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> cv2<span class="sf_code_punctuation">.</span>COLOR_BGR2GRAY<span class="sf_code_punctuation">)</span>
+    gray <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>GaussianBlur<span class="sf_code_punctuation">(</span>gray<span class="sf_code_punctuation">,</span> <span class="sf_code_punctuation">(</span><span class="sf_code_number">21</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">21</span><span class="sf_code_punctuation">),</span> <span class="sf_code_number">0</span><span class="sf_code_punctuation">)</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Check si image de référence existe ou pas</span>
+    <span class="sf_code_comment">#</span>
+    <span class="sf_code_keyword">if</span> avg <span class="sf_code_keyword">is</span> <span class="sf_code_boolean">None</span><span class="sf_code_punctuation">:</span>
+        <span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] starting background model…"</span><span class="sf_code_punctuation">)</span>
+        avg <span class="sf_code_operator">=</span> gray<span class="sf_code_punctuation">.</span>copy<span class="sf_code_punctuation">().</span>astype<span class="sf_code_punctuation">(</span><span class="sf_code_string">"float"</span><span class="sf_code_punctuation">)</span>
+        rawCapture<span class="sf_code_punctuation">.</span>truncate<span class="sf_code_punctuation">(</span><span class="sf_code_number">0</span><span class="sf_code_punctuation">)</span>
+        <span class="sf_code_keyword">continue</span>
+
+    <span class="sf_code_comment"># # # # #</span>
+    <span class="sf_code_comment"># On isole la différence entre l’image actuelle et la 	  # précédente</span>
+	  <span class="sf_code_comment">#</span>
+    cv2<span class="sf_code_punctuation">.</span>accumulateWeighted<span class="sf_code_punctuation">(</span>gray<span class="sf_code_punctuation">,</span> avg<span class="sf_code_punctuation">,</span> <span class="sf_code_number">0.5</span><span class="sf_code_punctuation">)</span>
+    frameDelta <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>absdiff<span class="sf_code_punctuation">(</span>gray<span class="sf_code_punctuation">,</span> cv2<span class="sf_code_punctuation">.</span>convertScaleAbs<span class="sf_code_punctuation">(</span>avg<span class="sf_code_punctuation">))</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># On applique un "threshold" sur le delta récupéré</span>
+    <span class="sf_code_comment"># dans le but de faciliter la détection du mouvement.</span>
+    <span class="sf_code_comment"># Threshold =&gt; différence entre blanc / noir</span>
+    <span class="sf_code_comment"># dilatation =&gt; augmente zone blanche</span>
+    <span class="sf_code_comment">#</span>
+    thresh <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>threshold<span class="sf_code_punctuation">(</span>frameDelta<span class="sf_code_punctuation">,</span> conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"delta_thresh"</span><span class="sf_code_punctuation">],</span> <span class="sf_code_number">255</span><span class="sf_code_punctuation">,</span>
+        cv2<span class="sf_code_punctuation">.</span>THRESH_BINARY<span class="sf_code_punctuation">)[</span><span class="sf_code_number">1</span><span class="sf_code_punctuation">]</span>
+    thresh <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>dilate<span class="sf_code_punctuation">(</span>thresh<span class="sf_code_punctuation">,</span> <span class="sf_code_boolean">None</span><span class="sf_code_punctuation">,</span> iterations<span class="sf_code_operator">=</span><span class="sf_code_number">2</span><span class="sf_code_punctuation">)</span>
+    cnts <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>findContours<span class="sf_code_punctuation">(</span>thresh<span class="sf_code_punctuation">.</span>copy<span class="sf_code_punctuation">(),</span> cv2<span class="sf_code_punctuation">.</span>RETR_EXTERNAL<span class="sf_code_punctuation">,</span>
+        cv2<span class="sf_code_punctuation">.</span>CHAIN_APPROX_SIMPLE<span class="sf_code_punctuation">)</span>
+    cnts <span class="sf_code_operator">=</span> imutils<span class="sf_code_punctuation">.</span>grab_contours<span class="sf_code_punctuation">(</span>cnts<span class="sf_code_punctuation">)</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># On dessine les contours de notre objet</span>
+    <span class="sf_code_comment">#</span>
+    <span class="sf_code_keyword">for</span> c <span class="sf_code_keyword">in</span> cnts<span class="sf_code_punctuation">:</span>
+        <span class="sf_code_comment"># si le contour est trop petit par rapport a ce que nous avons défini dans la configuration, on l’ignore</span>
+        <span class="sf_code_keyword">if</span> cv2<span class="sf_code_punctuation">.</span>contourArea<span class="sf_code_punctuation">(</span>c<span class="sf_code_punctuation">)</span> <span class="sf_code_operator">&lt;</span> conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"min_area"</span><span class="sf_code_punctuation">]:</span>
+            <span class="sf_code_keyword">continue</span>
+
+        <span class="sf_code_comment"># # # #</span>
+        <span class="sf_code_comment"># Dessin du contour dans l’image</span>
+        <span class="sf_code_comment">#</span>
+        <span class="sf_code_punctuation">(</span>x<span class="sf_code_punctuation">,</span> y<span class="sf_code_punctuation">,</span> w<span class="sf_code_punctuation">,</span> h<span class="sf_code_punctuation">)</span> <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>boundingRect<span class="sf_code_punctuation">(</span>c<span class="sf_code_punctuation">)</span>
+        cv2<span class="sf_code_punctuation">.</span>rectangle<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> <span class="sf_code_punctuation">(</span>x<span class="sf_code_punctuation">,</span> y<span class="sf_code_punctuation">),</span> <span class="sf_code_punctuation">(</span>x <span class="sf_code_operator">+</span> w<span class="sf_code_punctuation">,</span> y <span class="sf_code_operator">+</span> h<span class="sf_code_punctuation">),</span> <span class="sf_code_punctuation">(</span><span class="sf_code_number">0</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">255</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">0</span><span class="sf_code_punctuation">),</span> <span class="sf_code_number">2</span><span class="sf_code_punctuation">)</span>
+        
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Sauvegarde de l’image actuelle</span>
+    <span class="sf_code_comment">#</span>
+    <span class="sf_code_keyword">if</span> conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"show_img"</span><span class="sf_code_punctuation">]:</span>
+        cv2<span class="sf_code_punctuation">.</span>imwrite<span class="sf_code_punctuation">(</span>conf<span class="sf_code_punctuation">[</span><span class="sf_code_string">"show_img"</span><span class="sf_code_punctuation">],</span> frame<span class="sf_code_punctuation">)</span> 
+    
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Nettoyage du stream pour la prochaine image</span>
+    <span class="sf_code_comment">#</span>
+    rawCapture<span class="sf_code_punctuation">.</span>truncate<span class="sf_code_punctuation">(</span><span class="sf_code_number">0</span><span class="sf_code_punctuation">)</span></code></pre>
+<p><br></p>
+<p>Maintenant exécutez votre script python :</p>
+<pre><code class='code-multiline' lang='bash'>python brqtr_motion_capture.py --conf ./conf.json</code></pre>
+<p><br></p>
+<p>Enfin, ouvrez de nouveau votre page Web… 😰</p>
+<br>
+<p><b><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Et voilà ! 😃 Votre Raspberry Pi est capable de détecter des objets qui passent dans le champ de vision de la caméra.</b></p>
+<br>
+<blockquote>
+<p>💡 Le motion tracking se fait par rapport au référentiel de la caméra, faites bien attention de la stabiliser comme il faut. Si vous la tenez et bougez / tremblez vous verrez apparaitre des carrés partout et ce sera tout à fait normal 😆 Faites le test de la poser bien à plat et passez votre bras par-dessus par exemple. Ou encore tenez la caméra et demandez à un de vos camarades de passer devant en marchant 🕺</p>
+</blockquote>
+<br>
+<br>
+<h2>IV.2 - Reconnaissance faciale</h2>
+<p>Ultime grande étape, l’aboutissement de ce Coding Dojo… On va maintenant faire en sorte que notre Raspberry Pi soit capable de nous reconnaitre ainsi que notre voisin.</p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/71cd6b5bf0793da0165b1eeb37f900a9.jpg'></p>
+<br>
+<br>
+<h3>Dataset - Nos photos</h3>
+<p>Commençons par créer l’arborescence de notre projet, il est important que vous respectiez ces nomenclatures :</p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">cd</span> <span class="sf_code_punctuation">..</span>
+$ <span class="sf_code_function">mkdir</span> facerecognition
+$ <span class="sf_code_function">cd</span> facerecognition
+$ <span class="sf_code_function">mkdir</span> dataset
+$ <span class="sf_code_function">cd</span> dataset
+$ <span class="sf_code_function">mkdir</span> prenom_nom </code></pre>
+<p><br></p>
+<p>Le dossier dataset va contenir des sous-dossiers correspondant à chaque personne que nous souhaiterons identifier.</p>
+<p>Nous allons maintenant ajouter des photos à notre dossier qui serviront de base d’apprentissage à OpenCV. Plus vous en mettrez et plus la reconnaissance faciale sera efficace et précise.</p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Nous nous limiterons à 4 pour cet atelier, mais sachez qu’idéalement vous pouvez en mettre 20.</b></p>
+<br>
+<p><u>Avant d’ajouter vos photos :</u></p>
+<p>Il faut que vous réduisiez idéalement la résolution à <b>120x120</b> pixels et que la photo soit au format <b>.jpg</b>.</p>
+<p>C’est en effet une petite taille pour une photo de nos jours, mais rassurez-vous la puissance d’OpenCV vous prouvera que ce n’est pas un problème. Et surtout cela réduira grandement les temps de calcul, on vous rappelle que notre valeureux Raspberry Pi embarque un petit processeur basse consommation et ne peut rivaliser avec un Xeon 🙃 </p>
+<br>
+<ul><li>Une fois vos photos prêtes dans votre dossier <code class='code-inline'>prenom_nom</code>, faites-en un .zip
+</li><li>Puis ouvrez un nouveau terminal sur votre PC
+</li><li>Allez dans le dossier ou il y a vos photos formatées
+</li><li>Lancez la commande <code class='code-inline'>$ scp prenom_nom.zip pi@IP:./</code>
+</li></ul>
+<br>
+<blockquote>
+<p>💡 <code class='code-inline'>scp</code> va vous permettre de sélectionner le fichier à envoyer à la racine de votre Raspberry Pi.</p>
+</blockquote>
+<br>
+<p>Revenez maintenant à votre terminal SSH contrôlant votre Raspberry et effectuez les commandes suivantes : </p>
+<pre><code class='code-multiline' lang='bash'>$ <span class="sf_code_function">mv</span> theo_papillon.zip facerecognition/dataset/
+$ <span class="sf_code_function">cd</span> facerecognition/dataset/
+$ unzip theo_papillon.zip</code></pre>
+<p><br></p>
+<p>Vérifiez votre arborescence avec la commande <code class='code-inline'>tree</code>, vous devriez avoir un rendu comme ceci :</p>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/Screenshot%202020-01-24%20at%2017.43.31.png'></p>
+<br>
+<br>
+<br>
+<h3>Code</h3>
+<br>
+<p>Pour commencer, nous allons rajouter les toutes dernières dépendances qu’il nous manque :</p>
+<pre><code class='code-multiline' lang='bash'>$ pip <span class="sf_code_function">install</span> dlib
+$ pip <span class="sf_code_function">install</span> face_recognition</code></pre>
+<p><br></p>
+<blockquote>
+<p>💡 <code class='code-inline'>dlib</code> est une librairie qui nous fournit un modèle entrainé avec 3 millions de têtes pour OpenCV. Ce qui va nous permettre une grande optimisation et que OpenCV soit capable de nous reconnaitre avec seulement 4 photos au lieu de 20. </p>
+</blockquote>
+<br>
+<p>Nous allons maintenant nous occuper du script Python permettant à OpenCV d’intégrer nos photos, il générera un fichier <b>.pickle</b></p>
+<br>
+<p>Assurez-vous d’être au bon emplacement <code class='code-inline'>/home/pi/facerecognition</code></p>
+<p>Créez avec <code class='code-inline'>nano</code> le fichier <code class='code-inline'>encode_faces.py</code> </p>
+<br>
+<p>On commence comme toujours par importer les éléments dont nous avons besoin :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_keyword">from</span> imutils <span class="sf_code_keyword">import</span> paths
+<span class="sf_code_keyword">import</span> face_recognition
+<span class="sf_code_keyword">import</span> argparse
+<span class="sf_code_keyword">import</span> pickle
+<span class="sf_code_keyword">import</span> cv2
+<span class="sf_code_keyword">import</span> os</code></pre>
+<p><br></p>
+<p>Définition des arguments que la ligne de commande va prendre en paramètre :</p>
+<pre><code class='code-multiline' lang='python'>ap <span class="sf_code_operator">=</span> argparse<span class="sf_code_punctuation">.</span>ArgumentParser<span class="sf_code_punctuation">()</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-i"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--dataset"</span><span class="sf_code_punctuation">,</span> required<span class="sf_code_operator">=</span><span class="sf_code_boolean">True</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"path to input directory of faces + images"</span><span class="sf_code_punctuation">)</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-e"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--encodings"</span><span class="sf_code_punctuation">,</span> required<span class="sf_code_operator">=</span><span class="sf_code_boolean">True</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"path to serialized db of facial encodings"</span><span class="sf_code_punctuation">)</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-d"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--detection-method"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_builtin">type</span><span class="sf_code_operator">=</span><span class="sf_code_builtin">str</span><span class="sf_code_punctuation">,</span> default<span class="sf_code_operator">=</span><span class="sf_code_string">"cnn"</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"face detection model to use: either `hog` or `cnn`"</span><span class="sf_code_punctuation">)</span>
+args <span class="sf_code_operator">=</span> <span class="sf_code_builtin">vars</span><span class="sf_code_punctuation">(</span>ap<span class="sf_code_punctuation">.</span>parse_args<span class="sf_code_punctuation">())</span></code></pre>
+<p><br></p>
+<p>On récupère le chemin du dossier dataset qui contient toutes nos photos :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] quantifying faces…"</span><span class="sf_code_punctuation">)</span>
+imagePaths <span class="sf_code_operator">=</span> <span class="sf_code_builtin">list</span><span class="sf_code_punctuation">(</span>paths<span class="sf_code_punctuation">.</span>list_images<span class="sf_code_punctuation">(</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"dataset"</span><span class="sf_code_punctuation">]))</span>
+
+knownEncodings <span class="sf_code_operator">=</span> <span class="sf_code_punctuation">[]</span>
+knownNames <span class="sf_code_operator">=</span> <span class="sf_code_punctuation">[]</span></code></pre>
+<p><br></p>
+<p>On démarre notre process pour chaque photo :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_keyword">for</span> <span class="sf_code_punctuation">(</span>i<span class="sf_code_punctuation">,</span> imagePath<span class="sf_code_punctuation">)</span> <span class="sf_code_keyword">in</span> <span class="sf_code_builtin">enumerate</span><span class="sf_code_punctuation">(</span>imagePaths<span class="sf_code_punctuation">):</span>
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># On récupère le nom de l’image</span>
+    <span class="sf_code_comment"># </span>
+    <span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] processing image {}/{}"</span><span class="sf_code_punctuation">.</span><span class="sf_code_builtin">format</span><span class="sf_code_punctuation">(</span>i <span class="sf_code_operator">+</span> <span class="sf_code_number">1</span><span class="sf_code_punctuation">,</span>
+        <span class="sf_code_builtin">len</span><span class="sf_code_punctuation">(</span>imagePaths<span class="sf_code_punctuation">)))</span>
+    name <span class="sf_code_operator">=</span> imagePath<span class="sf_code_punctuation">.</span>split<span class="sf_code_punctuation">(</span>os<span class="sf_code_punctuation">.</span>path<span class="sf_code_punctuation">.</span>sep<span class="sf_code_punctuation">)[</span><span class="sf_code_operator">-</span><span class="sf_code_number">2</span><span class="sf_code_punctuation">]</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Chargement de l’image et conversion des couleurs en </span>
+	  <span class="sf_code_comment"># RGB car OpenCV attend ce format la</span>
+    <span class="sf_code_comment">#</span>
+    image <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>imread<span class="sf_code_punctuation">(</span>imagePath<span class="sf_code_punctuation">)</span>
+    rgb <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>cvtColor<span class="sf_code_punctuation">(</span>image<span class="sf_code_punctuation">,</span> cv2<span class="sf_code_punctuation">.</span>COLOR_BGR2RGB<span class="sf_code_punctuation">)</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Récupération des hitbox par OpenCV</span>
+    <span class="sf_code_comment">#</span>
+    boxes <span class="sf_code_operator">=</span> face_recognition<span class="sf_code_punctuation">.</span>face_locations<span class="sf_code_punctuation">(</span>rgb<span class="sf_code_punctuation">,</span>
+        model<span class="sf_code_operator">=</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"detection_method"</span><span class="sf_code_punctuation">])</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Encodage des têtes trouvées</span>
+    <span class="sf_code_comment"># Cette étape peut être longue selon le nombre de </span>
+    <span class="sf_code_comment"># têtes trouvées</span>
+	  <span class="sf_code_comment">#</span>
+    encodings <span class="sf_code_operator">=</span> face_recognition<span class="sf_code_punctuation">.</span>face_encodings<span class="sf_code_punctuation">(</span>rgb<span class="sf_code_punctuation">,</span> boxes<span class="sf_code_punctuation">)</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Pour chaque img encodée on associe l’encodage + nom</span>
+    <span class="sf_code_comment">#</span>
+    <span class="sf_code_keyword">for</span> encoding <span class="sf_code_keyword">in</span> encodings<span class="sf_code_punctuation">:</span>
+        <span class="sf_code_comment"># ajout de chaque duo encodage+nom a notre set de</span>
+		  <span class="sf_code_comment"># noms connus</span>
+        <span class="sf_code_comment">#</span>
+        knownEncodings<span class="sf_code_punctuation">.</span>append<span class="sf_code_punctuation">(</span>encoding<span class="sf_code_punctuation">)</span>
+        knownNames<span class="sf_code_punctuation">.</span>append<span class="sf_code_punctuation">(</span>name<span class="sf_code_punctuation">)</span></code></pre>
+<p><br></p>
+<p>Et pour finir il faut sauvegarder tous ces éléments dans le fichier .pickle :</p>
+<pre><code class='code-multiline' lang='bash'>print<span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] serializing encodings…"</span><span class="sf_code_punctuation">)</span>
+data <span class="sf_code_operator">=</span> <span class="sf_code_punctuation">{</span><span class="sf_code_string">"encodings"</span><span class="sf_code_keyword">:</span> knownEncodings, <span class="sf_code_string">"names"</span><span class="sf_code_keyword">:</span> knownNames<span class="sf_code_punctuation">}</span>
+f <span class="sf_code_operator">=</span> open<span class="sf_code_punctuation">(</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"encodings"</span><span class="sf_code_punctuation">]</span>, <span class="sf_code_string">"wb"</span><span class="sf_code_punctuation">)</span>
+f.write<span class="sf_code_punctuation">(</span>pickle.dumps<span class="sf_code_punctuation">(</span>data<span class="sf_code_punctuation">))</span>
+f.close<span class="sf_code_punctuation">()</span></code></pre>
+<p><br></p>
+<p>Exécutez la commande :</p>
+<pre><code class='code-multiline' lang='bash'>python encode_faces.py --dataset dataset --encodings encodings.pickle</code></pre>
+<p><br></p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Patientez sagement le temps de l’encodage 😇 Et on enchaine 😃</b></p>
+<br>
+<p>À présent l’ultime fichier qui finalisera notre solution ! 🥳</p>
+<p>Créez avec <code class='code-inline'>nano</code> le fichier <code class='code-inline'>brqtr_faces.py</code></p>
+<br>
+<p>On ne change pas une équipe qui gagne, nos import :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_keyword">from</span> imutils<span class="sf_code_punctuation">.</span>video <span class="sf_code_keyword">import</span> VideoStream
+<span class="sf_code_keyword">import</span> face_recognition
+<span class="sf_code_keyword">import</span> argparse
+<span class="sf_code_keyword">import</span> imutils
+<span class="sf_code_keyword">import</span> pickle
+<span class="sf_code_keyword">import</span> time
+<span class="sf_code_keyword">import</span> cv2</code></pre>
+<p><br></p>
+<p>Définition des arguments :</p>
+<pre><code class='code-multiline' lang='python'>ap <span class="sf_code_operator">=</span> argparse<span class="sf_code_punctuation">.</span>ArgumentParser<span class="sf_code_punctuation">()</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-e"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--encodings"</span><span class="sf_code_punctuation">,</span> required<span class="sf_code_operator">=</span><span class="sf_code_boolean">True</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"path to serialized db of facial encodings"</span><span class="sf_code_punctuation">)</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-i"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--output-img"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_builtin">type</span><span class="sf_code_operator">=</span><span class="sf_code_builtin">str</span><span class="sf_code_punctuation">,</span>
+  <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"path to output image"</span><span class="sf_code_punctuation">)</span>
+ap<span class="sf_code_punctuation">.</span>add_argument<span class="sf_code_punctuation">(</span><span class="sf_code_string">"-d"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_string">"--detection-method"</span><span class="sf_code_punctuation">,</span> <span class="sf_code_builtin">type</span><span class="sf_code_operator">=</span><span class="sf_code_builtin">str</span><span class="sf_code_punctuation">,</span> default<span class="sf_code_operator">=</span><span class="sf_code_string">"hog"</span><span class="sf_code_punctuation">,</span>
+    <span class="sf_code_builtin">help</span><span class="sf_code_operator">=</span><span class="sf_code_string">"face detection model to use: either `hog` or `cnn`"</span><span class="sf_code_punctuation">)</span>
+args <span class="sf_code_operator">=</span> <span class="sf_code_builtin">vars</span><span class="sf_code_punctuation">(</span>ap<span class="sf_code_punctuation">.</span>parse_args<span class="sf_code_punctuation">())</span></code></pre>
+<p><br></p>
+<p>Initialisation :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_comment"># # # #</span>
+<span class="sf_code_comment">#  Chargement des visages</span>
+<span class="sf_code_comment">#</span>
+<span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] loading encodings…"</span><span class="sf_code_punctuation">)</span>
+data <span class="sf_code_operator">=</span> pickle<span class="sf_code_punctuation">.</span>loads<span class="sf_code_punctuation">(</span><span class="sf_code_builtin">open</span><span class="sf_code_punctuation">(</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"encodings"</span><span class="sf_code_punctuation">],</span> <span class="sf_code_string">"rb"</span><span class="sf_code_punctuation">).</span>read<span class="sf_code_punctuation">())</span>
+
+<span class="sf_code_comment"># # # #</span>
+<span class="sf_code_comment"># Initialisation de la caméra</span>
+<span class="sf_code_comment">#</span>
+<span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] Intitialize the camera…"</span><span class="sf_code_punctuation">)</span>
+vs <span class="sf_code_operator">=</span> VideoStream<span class="sf_code_punctuation">(</span>usePiCamera<span class="sf_code_operator">=</span><span class="sf_code_number">1</span><span class="sf_code_punctuation">).</span>start<span class="sf_code_punctuation">()</span>
+
+<span class="sf_code_comment"># # # #</span>
+<span class="sf_code_comment"># Warmup de la caméra</span>
+<span class="sf_code_comment">#</span>
+<span class="sf_code_keyword">print</span><span class="sf_code_punctuation">(</span><span class="sf_code_string">"[INFO] Camera warmup…"</span><span class="sf_code_punctuation">)</span>
+time<span class="sf_code_punctuation">.</span>sleep<span class="sf_code_punctuation">(</span><span class="sf_code_number">2.0</span><span class="sf_code_punctuation">)</span></code></pre>
+<p><br></p>
+<p>Exécution :</p>
+<pre><code class='code-multiline' lang='python'><span class="sf_code_keyword">while</span> <span class="sf_code_boolean">True</span><span class="sf_code_punctuation">:</span>
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Lecture image actuelle</span>
+    <span class="sf_code_comment">#</span>
+    frame <span class="sf_code_operator">=</span> vs<span class="sf_code_punctuation">.</span>read<span class="sf_code_punctuation">()</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Conversion couleurs BGR en RGB pour OpenCV.</span>
+    <span class="sf_code_comment"># Redimensionnement de la largeur de l’image</span>
+    <span class="sf_code_comment"># pour optimiser les temps de traitements</span>
+	  <span class="sf_code_comment">#</span>
+    rgb <span class="sf_code_operator">=</span> cv2<span class="sf_code_punctuation">.</span>cvtColor<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> cv2<span class="sf_code_punctuation">.</span>COLOR_BGR2RGB<span class="sf_code_punctuation">)</span>
+    rgb <span class="sf_code_operator">=</span> imutils<span class="sf_code_punctuation">.</span>resize<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> width<span class="sf_code_operator">=</span><span class="sf_code_number">250</span><span class="sf_code_punctuation">)</span>
+    r <span class="sf_code_operator">=</span> frame<span class="sf_code_punctuation">.</span>shape<span class="sf_code_punctuation">[</span><span class="sf_code_number">1</span><span class="sf_code_punctuation">]</span> <span class="sf_code_operator">/</span> <span class="sf_code_builtin">float</span><span class="sf_code_punctuation">(</span>rgb<span class="sf_code_punctuation">.</span>shape<span class="sf_code_punctuation">[</span><span class="sf_code_number">1</span><span class="sf_code_punctuation">])</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Récupération de la hitbox pour chaque visage</span>
+    <span class="sf_code_comment">#</span>
+    boxes <span class="sf_code_operator">=</span> face_recognition<span class="sf_code_punctuation">.</span>face_locations<span class="sf_code_punctuation">(</span>rgb<span class="sf_code_punctuation">,</span> model<span class="sf_code_operator">=</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"detection_method"</span><span class="sf_code_punctuation">])</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Encodage des visages trouvés</span>
+    <span class="sf_code_comment"># Cette étape peut être longue selon le nombre de </span>
+    <span class="sf_code_comment"># visages trouvés</span>
+	  <span class="sf_code_comment">#</span>
+    encodings <span class="sf_code_operator">=</span> face_recognition<span class="sf_code_punctuation">.</span>face_encodings<span class="sf_code_punctuation">(</span>rgb<span class="sf_code_punctuation">,</span> boxes<span class="sf_code_punctuation">)</span>
+
+
+     <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Pour chaque img encodée on associe l’encodage + nom</span>
+    <span class="sf_code_comment">#</span>
+    names <span class="sf_code_operator">=</span> <span class="sf_code_punctuation">[]</span>
+    <span class="sf_code_keyword">for</span> encoding <span class="sf_code_keyword">in</span> encodings<span class="sf_code_punctuation">:</span>
+        <span class="sf_code_comment"># # # #</span>
+        <span class="sf_code_comment"># Comparaison du visage encodé actuel avec le</span>
+		  <span class="sf_code_comment"># dataset</span>
+        <span class="sf_code_comment">#</span>
+        matches <span class="sf_code_operator">=</span> face_recognition<span class="sf_code_punctuation">.</span>compare_faces<span class="sf_code_punctuation">(</span>data<span class="sf_code_punctuation">[</span><span class="sf_code_string">"encodings"</span><span class="sf_code_punctuation">],</span>
+            encoding<span class="sf_code_punctuation">)</span>
+        name <span class="sf_code_operator">=</span> <span class="sf_code_string">"Unknown"</span>
+
+        <span class="sf_code_comment"># # # #</span>
+        <span class="sf_code_comment"># Si ça match, c’est qu’il y a une comparaison 			  # trouvée</span>
+        <span class="sf_code_comment">#</span>
+        <span class="sf_code_keyword">if</span> <span class="sf_code_boolean">True</span> <span class="sf_code_keyword">in</span> matches<span class="sf_code_punctuation">:</span>
+    
+            <span class="sf_code_comment"># On récupère tous les éléments correspondants 			   # au match</span>
+            matchedIdxs <span class="sf_code_operator">=</span> <span class="sf_code_punctuation">[</span>I <span class="sf_code_keyword">for</span> <span class="sf_code_punctuation">(</span>I<span class="sf_code_punctuation">,</span> b<span class="sf_code_punctuation">)</span> <span class="sf_code_keyword">in</span> <span class="sf_code_builtin">enumerate</span><span class="sf_code_punctuation">(</span>matches<span class="sf_code_punctuation">)</span> <span class="sf_code_keyword">if</span> b<span class="sf_code_punctuation">]</span>
+            counts <span class="sf_code_operator">=</span> <span class="sf_code_punctuation">{}</span>
+
+            <span class="sf_code_comment"># Pour chaque match, récupération nom + 					   # incrémentation "probabilité"</span>
+            <span class="sf_code_keyword">for</span> I <span class="sf_code_keyword">in</span> matchedIdxs<span class="sf_code_punctuation">:</span>
+                name <span class="sf_code_operator">=</span> data<span class="sf_code_punctuation">[</span><span class="sf_code_string">"names"</span><span class="sf_code_punctuation">][</span>I<span class="sf_code_punctuation">]</span>
+                counts<span class="sf_code_punctuation">[</span>name<span class="sf_code_punctuation">]</span> <span class="sf_code_operator">=</span> counts<span class="sf_code_punctuation">.</span>get<span class="sf_code_punctuation">(</span>name<span class="sf_code_punctuation">,</span> <span class="sf_code_number">0</span><span class="sf_code_punctuation">)</span> <span class="sf_code_operator">+</span> <span class="sf_code_number">1</span>
+
+            <span class="sf_code_comment"># Contrôle et récupération du nom </span>
+            name <span class="sf_code_operator">=</span> <span class="sf_code_builtin">max</span><span class="sf_code_punctuation">(</span>counts<span class="sf_code_punctuation">,</span> key<span class="sf_code_operator">=</span>counts<span class="sf_code_punctuation">.</span>get<span class="sf_code_punctuation">)</span>
+        
+        <span class="sf_code_comment"># Sauvegarde</span>
+        names<span class="sf_code_punctuation">.</span>append<span class="sf_code_punctuation">(</span>name<span class="sf_code_punctuation">)</span>
+
+    <span class="sf_code_comment"># # # #</span>
+    <span class="sf_code_comment"># Dessin des cadres autour des têtes détectées </span>
+    <span class="sf_code_comment">#</span>
+    <span class="sf_code_keyword">for</span> <span class="sf_code_punctuation">((</span>top<span class="sf_code_punctuation">,</span> right<span class="sf_code_punctuation">,</span> bottom<span class="sf_code_punctuation">,</span> left<span class="sf_code_punctuation">),</span> name<span class="sf_code_punctuation">)</span> <span class="sf_code_keyword">in</span> <span class="sf_code_builtin">zip</span><span class="sf_code_punctuation">(</span>boxes<span class="sf_code_punctuation">,</span> names<span class="sf_code_punctuation">):</span>
+        <span class="sf_code_comment"># redimensionnement</span>
+        top <span class="sf_code_operator">=</span> <span class="sf_code_builtin">int</span><span class="sf_code_punctuation">(</span>top <span class="sf_code_operator">*</span> r<span class="sf_code_punctuation">)</span>
+        right <span class="sf_code_operator">=</span> <span class="sf_code_builtin">int</span><span class="sf_code_punctuation">(</span>right <span class="sf_code_operator">*</span> r<span class="sf_code_punctuation">)</span>
+        bottom <span class="sf_code_operator">=</span> <span class="sf_code_builtin">int</span><span class="sf_code_punctuation">(</span>bottom <span class="sf_code_operator">*</span> r<span class="sf_code_punctuation">)</span>
+        left <span class="sf_code_operator">=</span> <span class="sf_code_builtin">int</span><span class="sf_code_punctuation">(</span>left <span class="sf_code_operator">*</span> r<span class="sf_code_punctuation">)</span>
+
+        <span class="sf_code_comment"># dessin du rectangle et du nom</span>
+        cv2<span class="sf_code_punctuation">.</span>rectangle<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> <span class="sf_code_punctuation">(</span>left<span class="sf_code_punctuation">,</span> top<span class="sf_code_punctuation">),</span> <span class="sf_code_punctuation">(</span>right<span class="sf_code_punctuation">,</span> bottom<span class="sf_code_punctuation">),</span>
+            <span class="sf_code_punctuation">(</span><span class="sf_code_number">0</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">255</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">0</span><span class="sf_code_punctuation">),</span> <span class="sf_code_number">2</span><span class="sf_code_punctuation">)</span>
+        y <span class="sf_code_operator">=</span> top <span class="sf_code_operator">-</span> <span class="sf_code_number">15</span> <span class="sf_code_keyword">if</span> top <span class="sf_code_operator">-</span> <span class="sf_code_number">15</span> <span class="sf_code_operator">&gt;</span> <span class="sf_code_number">15</span> <span class="sf_code_keyword">else</span> top <span class="sf_code_operator">+</span> <span class="sf_code_number">15</span>
+        cv2<span class="sf_code_punctuation">.</span>putText<span class="sf_code_punctuation">(</span>frame<span class="sf_code_punctuation">,</span> name<span class="sf_code_punctuation">,</span> <span class="sf_code_punctuation">(</span>left<span class="sf_code_punctuation">,</span> y<span class="sf_code_punctuation">),</span> cv2<span class="sf_code_punctuation">.</span>FONT_HERSHEY_SIMPLEX<span class="sf_code_punctuation">,</span>
+            <span class="sf_code_number">0.75</span><span class="sf_code_punctuation">,</span> <span class="sf_code_punctuation">(</span><span class="sf_code_number">0</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">255</span><span class="sf_code_punctuation">,</span> <span class="sf_code_number">0</span><span class="sf_code_punctuation">),</span> <span class="sf_code_number">2</span><span class="sf_code_punctuation">)</span>
+
+    <span class="sf_code_comment"># Sauvegarde en tant qu’image </span>
+    <span class="sf_code_keyword">if</span> args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"output_img"</span><span class="sf_code_punctuation">]</span> <span class="sf_code_keyword">is</span> <span class="sf_code_operator">not</span> <span class="sf_code_boolean">None</span><span class="sf_code_punctuation">:</span>
+        cv2<span class="sf_code_punctuation">.</span>imwrite<span class="sf_code_punctuation">(</span>args<span class="sf_code_punctuation">[</span><span class="sf_code_string">"output_img"</span><span class="sf_code_punctuation">],</span> frame<span class="sf_code_punctuation">)</span> </code></pre>
+<p><br></p>
+<p>Il ne nous reste plus qu’à nettoyer :</p>
+<pre><code class='code-multiline' lang='python'>cv2<span class="sf_code_punctuation">.</span>destroyAllWindows<span class="sf_code_punctuation">()</span>
+vs<span class="sf_code_punctuation">.</span>stop<span class="sf_code_punctuation">()</span></code></pre>
+<p><br></p>
+<p>Et maintenant, lancez notre ultime script Python 🤞</p>
+<pre><code class='code-multiline' lang='bash'>$ python brqtr_faces.py --encodings encodings.pickle --output-img <span class="sf_code_punctuation">..</span>/tmp/stream/pic.jpg</code></pre>
+<p><br></p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> <b>Positionnez-vous devant votre caméra et admirez le résultat !</b> 🥳</p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/image.gif'></p>
+<br>
+<br>
+<hr>
+<br>
+<br>
+<h1>V - Pour aller plus loin</h1>
+<p>Félicitations, vous êtes arrivé au bout de ce tuto !</p>
+<p>Mais certainement pas de toutes les possibilités que vous offre votre Raspberry Pi 🤩</p>
+<br>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Bon OK, vous pouvez connecter votre smartphone au Wifi et tester le flux vidéo avec VLC, mais déconnectez votre PC pour que le réseau tienne 😅</p>
+<br>
+<p>Nous avons construit ce tuto dans le but d’être le plus accessible possible et de vous faire toucher un maximum de choses en quelques heures tout en atteignant l’objectif final.</p>
+<p>Il y a de nombreuses pistes possibles pour faire évoluer votre solution, nous nous ferons un plaisir d’en discuter avec vous, sollicitez-nous ! 😃</p>
+<br>
+<p>Néanmoins voici une liste non exhaustive d’idées… On dit juste ça comme ça 😉</p>
+<ul><li>vous amuser à modifier les paramètres afin de trouver les réglages qui vous correspondent le mieux pour trouver le meilleur compromis entre qualité / fluidité de la vidéo
+</li><li>basculer votre page HTML sur un serveur (ou le Raspberry Pi temporairement) afin de pouvoir accéder à cette page et au flux de la caméra depuis n’importe quel device
+</li><li>rajouter une fonction de play/plause au clic 
+</li><li>vous faire un belle page HTML 
+</li><li>rajouter une fonction d’enregistrement via un bouton ou/et à la détection d’un mouvement ou d’une personne inconnue
+<ul><li>	dans cette optique, faire en sorte que l’enregistrement soit directement  upload sur un drive
+</li><li>	envois d’un SMS/Mail automatique lors de la détection d’un objet ou d’une personne connue / inconnue
+</li></ul></li><li>lecture d’un son lors de la détection d’une personne (la reine des neiges quand un des enfants rentre par exemple 🥶) 
+</li></ul>
+<br>
+<p><b><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> ETC ETC ETC………</b></p>
+<br>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/CV5UzgHW4AAx6xC.jpg'></p>
+<br>
+<br>
+<br>
+<hr>
+<br>
+<br>
+<h1>VI - Chez Vous</h1>
+<p>Quelques conseils une fois que vous serez rentré à la maison avec votre nouveau Raspberry Pi :</p>
+<ol start="1"><li>Branchez-le à un écran ou via Ethernet pour pouvoir refaire la configuration réseau et le connecter à votre Wifi.
+</li><li>Changez le mot de passe de session, il est temps de mettre quelque chose de plus sécurisé 😁
+</li><li>Attribuez-lui une adresse IP fixe dans votre routeur / box internet comme nous l’avions fait au préalable pour cet atelier. Cela vous permettra de toujours connaitre son adresse, elle ne changera pas, et vous pourrez vous y connecter en SSH / accéder au flux de la caméra toujours de la même manière.
+</li><li>Mettez la page Web sur le Raspberry Pi ou un NAS / serveur afin de pouvoir y accéder depuis n’importe où. Redirigez ensuite un des ports de votre box sur l’adresse IP du Rasp. Depuis l’extérieur accédez à votre flux camera en utilisant l’adresse IP de votre box internet.
+</li><li>N’hésitez à nous solliciter 😉
+</li></ol>
+<br>
+<br>
+<hr>
+<br>
+<h1>VII - On se voit au CD2 ? 😇</h1>
+<p><img src='BRQTR%20-%20Tuto%20Coding%20Club%201/ob_d7a006_to-be-continued.jpg'></p>
+<br>
+<br>
+
+        </div>
+        <script type="text/javascript">
+            (function() {
+
+    var doc_ols = document.getElementsByTagName("ol");
+
+    for ( i=0; i<doc_ols.length; i++) {
+
+        var ol_start = doc_ols[i].getAttribute("start") - 1;
+        doc_ols[i].setAttribute("style", "counter-reset:ol_counter " + ol_start + ";");
+
+    }
+
+})();
+
+        </script>
+        <style>
+            html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}html{line-height:1}ol,ul{list-style:none}table{border-collapse:collapse;border-spacing:0}caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}q,blockquote{quotes:none}q:before,q:after,blockquote:before,blockquote:after{content:"";content:none}a img{border:none}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}*{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}html{font-size:87.5%;line-height:1.57143em}html{font-size:14px;line-height:1.6em;-webkit-text-size-adjust:100%}body{background:#fcfcfc;color:#545454;text-rendering:optimizeLegibility;font-family:"AvenirNext-Regular"}a{color:#de4c4f;text-decoration:none}h1{font-family:"AvenirNext-Medium";color:#333;font-size:1.6em;line-height:1.3em;margin-bottom:.78571em}h2{font-family:"AvenirNext-Medium";color:#333;font-size:1.3em;line-height:1em;margin-bottom:.62857em}h3{font-family:"AvenirNext-Medium";color:#333;font-size:1.15em;line-height:1em;margin-bottom:.47143em}p{margin-bottom:1.57143em;hyphens:auto}hr{height:1px;border:0;background-color:#dedede;margin:-1px auto 1.57143em auto}ul,ol{margin-bottom:.31429em}ul ul,ul ol,ol ul,ol ol{margin-bottom:0px}ol{counter-reset:ol_counter}ol li:before{content:counter(ol_counter) ".";counter-increment:ol_counter;color:#e06e73;text-align:right;display:inline-block;min-width:1em;margin-right:0.5em}b,strong{font-family:"AvenirNext-Bold"}i,em{font-family:"AvenirNext-Italic"}code{font-family:"Menlo-Regular"}.text-overflow-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sf_code_string,.sf_code_selector,.sf_code_attr-name,.sf_code_char,.sf_code_builtin,.sf_code_inserted{color:#D33905}.sf_code_comment,.sf_code_prolog,.sf_code_doctype,.sf_code_cdata{color:#838383}.sf_code_number,.sf_code_boolean{color:#0E73A2}.sf_code_keyword,.sf_code_atrule,.sf_code_rule,.sf_code_attr-value,.sf_code_function,.sf_code_class-name,.sf_code_class,.sf_code_regex,.sf_code_important,.sf_code_variable,.sf_code_interpolation{color:#0E73A2}.sf_code_property,.sf_code_tag,.sf_code_constant,.sf_code_symbol,.sf_code_deleted{color:#1B00CE}.sf_code_macro,.sf_code_entity,.sf_code_operator,.sf_code_url{color:#920448}.note-wrapper{max-width:46em;margin:0px auto;padding:1.57143em 3.14286em}.note-wrapper.spotlight-preview{overflow-x:hidden}u{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#e06e73 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}s{color:#878787}p{margin-bottom:0.1em}hr{margin-bottom:0.7em;margin-top:0.7em}ul li{text-indent:-0.35em}ul li:before{content:"•";color:#e06e73;display:inline-block;margin-right:0.3em}ul ul{margin-left:1.25714em}ol li{text-indent:-1.45em}ol ol{margin-left:1.25714em}blockquote{display:block;margin-left:-1em;padding-left:0.8em;border-left:0.2em solid #e06e73}.todo-list ul{margin-left:1.88571em}.todo-list li{text-indent:-1.75em}.todo-list li:before{content:"";display:static;margin-right:0px}.todo-checkbox{text-indent:-1.7em}.todo-checkbox svg{margin-right:0.3em;position:relative;top:0.2em}.todo-checkbox svg #check{display:none}.todo-checkbox.todo-checked #check{display:inline}.todo-checkbox.todo-checked+.todo-text{text-decoration:line-through;color:#878787}.code-inline{display:inline;background:white;border:solid 1px #dedede;padding:0.2em 0.5em;font-size:0.9em}.code-multiline{display:block;background:white;border:solid 1px #dedede;padding:0.7em 1em;font-size:0.9em;overflow-x:auto}.hashtag{display:inline-block;color:white;background:#b8bfc2;padding:0.0em 0.5em;border-radius:1em;text-indent:0}.hashtag a{color:#fff}.address a{color:#545454;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#0da35e 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}.address svg{position:relative;top:0.2em;display:inline-block;margin-right:0.2em}.color-preview{display:inline-block;width:1em;height:1em;border:solid 1px rgba(0,0,0,0.3);border-radius:50%;margin-right:0.1em;position:relative;top:0.2em;white-space:nowrap}.color-code{margin-right:0.2em;font-family:"Menlo-Regular";font-size:0.9em}.color-hash{opacity:0.4}.ordered-list-number{color:#e06e73;text-align:right;display:inline-block;min-width:1em}.arrow svg{position:relative;top:0.08em;display:inline-block;margin-right:0.15em;margin-left:0.15em}.arrow svg #rod{stroke:#545454}.arrow svg #point{fill:#545454}mark{color:inherit;display:inline;padding:0.2em 0.5em;background-color:#fcffc0}img{max-width:100%;height:auto}
+
+        </style>
+    </body>
+</html>
