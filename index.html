@@ -20,6 +20,7 @@ function createImageLayer() {
   img.style.position = "absolute";
   img.style.zIndex = -1;
   img.onload = imageOnload;
+  img.onerror = imageOnError;
   img.onclick = imageOnclick;
   img.src = "http://10.0.0.12:8080/?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("webcam");
@@ -34,6 +35,12 @@ function imageOnload() {
     del.parentNode.removeChild(del);
   }
   finished.push(this);
+  if (!paused) createImageLayer();
+}
+
+// Handle unexpected image load error (such as 404), causing stop of streaming
+function imageOnError(event) {
+  console.errro('Image load error', event);
   if (!paused) createImageLayer();
 }
 
